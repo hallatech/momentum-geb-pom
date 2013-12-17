@@ -43,7 +43,7 @@ environments {
 		baseUrl = "http://localhost:8080"
 	}
 	'cloud' {
-		baseUrl = "http://live.crs.momentum.spindriftsoftware.com:8080"
+		baseUrl = "http://live.uat.momentum.com"
 	}
 }
 
