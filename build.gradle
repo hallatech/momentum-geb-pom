@@ -1,16 +1,73 @@
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
 
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath "org.gebish:geb-core:0.9.2"
+		classpath "org.seleniumhq.selenium:selenium-firefox-driver:2.38.0"
+	}
+}
+	
+import geb.Browser
+
 repositories {
 	mavenCentral()
 }
 
-defaultTasks 'test'
+// The drivers we want to use
+ext.drivers = ["firefox"]
+
+dependencies {
+		def gebVersion = "0.9.1" //Note 0.9.2 causes isAt() issues
+		def seleniumVersion = "2.38.0"
+
+		compile 'org.codehaus.groovy:groovy-all:2.0.6'
+		compile "org.gebish:geb-core:${gebVersion}"
+		
+		// If using Spock, need to depend on geb-spock
+		testCompile "org.gebish:geb-spock:$gebVersion"
+		testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
+		
+		// If using JUnit, need to depend on geb-junit (3 or 4)
+		//testCompile "org.gebish:geb-junit4:$gebVersion"
+
+		// Drivers
+		drivers.each { driver ->
+				compile "org.seleniumhq.selenium:selenium-$driver-driver:$seleniumVersion"
+		}
+}
+
+drivers.each { driver ->
+		task "${driver}Test"(type: Test) {
+				testReportDir = reporting.file("$name/tests")
+				testResultsDir = file("$buildDir/test-results/$name")
+
+				systemProperty "geb.build.reportsDir", reporting.file("$name/geb")
+				systemProperty "geb.env", driver
+
+				// If you wanted to set the baseUrl in your build…
+				// systemProperty "geb.build.baseUrl", "http://myapp.com"
+		}
+}
+
+test {
+				dependsOn drivers.collect { tasks["${it}Test"] }
+				enabled = false
+}
+
+defaultTasks 'testClasses'
 
 task wrapper(type: Wrapper) {
 	gradleVersion = '1.9'
 }
 
+if (hasProperty('webTests')) {
+	apply from: 'scripts/homePage.groovy'
+	apply from: 'scripts/registration.groovy'
+}
 
 
 
