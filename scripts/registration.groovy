@@ -17,10 +17,10 @@ buildscript {
 
 // Groovy inline script to test homepage access
 import geb.Browser
-import com.spindrift.web.pages.RegistrationPage
+import com.spindrift.web.pages.RegisterPage
 
 Browser.drive {
-	to RegistrationPage
-	assert at(RegistrationPage)
+	to RegisterPage
+	assert at(RegisterPage)
 }
 

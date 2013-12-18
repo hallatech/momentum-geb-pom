@@ -9,9 +9,9 @@ class RegistrationSpec extends GebSpec {
 
 	def "Navigate to registration page and register successfully"() {
 		given:
-		to RegistrationPage
+		to RegisterPage
 		
 		expect:
-		at RegistrationPage
+		at RegisterPage
 	}
 }

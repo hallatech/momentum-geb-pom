@@ -58,6 +58,10 @@ test {
 				enabled = false
 }
 
+//Dummy task to run scripts without having to do any normal tasks
+task doNothing() {
+}
+
 defaultTasks 'testClasses'
 
 task wrapper(type: Wrapper) {
@@ -67,6 +71,9 @@ task wrapper(type: Wrapper) {
 if (hasProperty('webTests')) {
 	apply from: 'scripts/homePage.groovy'
 	apply from: 'scripts/registration.groovy'
+}
+if (hasProperty('generatePages')) {
+	apply from: 'scripts/generatePages.groovy'
 }
 
 
