@@ -1,4 +1,4 @@
-buildscript {
+	buildscript {
 	repositories {
 	  mavenCentral()
 	}
@@ -132,20 +132,42 @@ def sanitizePageClass(String pageName) {
 	className.capitalize()
 }
 
-//Finally we can generate page objects:
+//Finally we can generate page objects - first as a generated tier and secondly as a custom tier
 File sourceDir= new File("${projectDir}/src/main/groovy")
-File packageDir= new File(sourceDir, 'com/spindrift/web/pages')
-if (!packageDir.exists()) packageDir.mkdirs()
+def momPackageDirName = 'com/spindrift/momentum/pages'
+def momPackageName = momPackageDirName.replace('/', '.')
+File momPackageDir= new File(sourceDir, momPackageDirName)
+if (!momPackageDir.exists()) momPackageDir.mkdirs()
+
+def customPackageDirName = 'com/spindrift/web/pages'
+def customPackageName = customPackageDirName.replace('/', '.')
+File customPackageDir= new File(sourceDir, customPackageDirName)
+if (!customPackageDir.exists()) customPackageDir.mkdirs()
+
 for (SitePage sitePage : momPages ) {
 	def pageName = sanitizePageClass(sitePage.name)
-	new File("${packageDir}/${pageName}.groovy").withWriter { w->
-		w << "package com.spindrift.web.pages"
+	new File("${momPackageDir}/Momentum${pageName}.groovy").withWriter { w->
+		w << "package ${momPackageName}"
 		w << "\n\nimport geb.*"
 		w << "\nimport groovy.lang.MetaClass"
-		w << "\nimport com.spindrift.momentum.pages.MomentumPage"
-		w << "\n\nclass ${pageName} extends MomentumPage {"
+		w << "\nimport com.spindrift.momentum.web.MomentumPage"
+		w << "\n\nclass Momentum${pageName} extends MomentumPage {"
 		w << "\n\n  static url = '${sitePage.url}'"
 		w << "\n\n  static at = { title == '${sitePage.title}' }"
 		w << "\n\n}"
 	}
+	//Only re-generate custom classes when requested otherwise any customisations would be lost
+	if (hasProperty('overrideCustomClasses')) {
+		new File("${customPackageDir}/${pageName}.groovy").withWriter { w->
+			w << "package ${customPackageName}"
+			w << "\n\nimport geb.*"
+			w << "\nimport groovy.lang.MetaClass"
+			w << "\nimport ${momPackageName}.Momentum${pageName}"
+			w << "\n\nclass ${pageName} extends Momentum${pageName} {"
+			w << "\n\n  //Add customisations to override generated class here"
+			w << "\n\n}"
+		}
+	}
 }
+
+

@@ -1,4 +1,4 @@
-package com.spindrift.momentum.pages
+package com.spindrift.momentum.web
 
 import geb.Page
 import groovy.lang.MetaClass;
