@@ -69,9 +69,16 @@ task wrapper(type: Wrapper) {
 }
 
 if (hasProperty('webTests')) {
-	apply from: 'scripts/homePage.groovy'
-	apply from: 'scripts/registration.groovy'
+	if (hasProperty('testName')) {
+		apply from: "scripts/${testName}.groovy"
+	}
+	else {
+		//Run all tests listed here
+		apply from: 'scripts/homePage.groovy'
+		apply from: 'scripts/registration.groovy'
+	}
 }
+
 if (hasProperty('generatePages')) {
 	apply from: 'scripts/generatePages.groovy'
 }

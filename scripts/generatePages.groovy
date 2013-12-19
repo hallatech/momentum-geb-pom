@@ -45,7 +45,7 @@ def homePageTitle = "${rootTitle}Welcome to the home of online shopping."
 ArrayList<SitePage> momPages = new ArrayList<SitePage>()
 
 //First go to the BCC and extract URL and page names
-browser.baseUrl = "http://localhost:8180/atg/bcc"
+browser.baseUrl = bccUrl
 try {
 	// Go to homepage - base Url
 	browser.go()
@@ -92,11 +92,11 @@ println "BCC URL Pages found: ${momPages}"
 
 // Now we attempt to get the page titles for the pages
 browser = new Browser(driver: new FirefoxDriver())
-browser.baseUrl = "http://localhost:8080"
+browser.baseUrl = storefrontUrl
 try {
 	// Go to homepage - base Url
 	browser.go()
-	assert browser.page.title == "${rootTitle}Welcome to the home of online shopping."
+	assert browser.page.title == homePageTitle
 	// Now process the pages and populate page titles
 	for (SitePage sitePage : momPages ) {
 		browser.go sitePage.url
@@ -106,7 +106,7 @@ try {
 			sitePage.title = browser.page.title
 		}
 		else {
-			println "There was a potential problem accessing the url: ${sitePAge.url}, title was not updated"
+			println "There was a potential problem accessing the url: ${sitePage.url}, title was not updated"
 		}
 	}
 }

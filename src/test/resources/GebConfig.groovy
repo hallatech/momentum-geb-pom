@@ -104,7 +104,7 @@ unexpectedPages = [PageNotFoundPage]
  */
 momentum {
 	siteTitlePrefix = 'Spindrift Momentum — '
-	homePageTitleSuffix = 'Welcome to the home of online shopping.'
+	homePageTitleSuffix = 'Welcome to the home of online shopping345.'
 	homePageTitle = "${siteTitlePrefix}${homePageTitleSuffix}"
 	registrationPageTitle = "${siteTitlePrefix}Register"
 	loginPageTitle = "${siteTitlePrefix}Login"

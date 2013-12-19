@@ -66,8 +66,18 @@ The following command will launch the scripted tests (which also depend on the g
 does anything of importance (i.e. doNothing):
 
     gradle dN -PwebTests
+    
+To run an individual script use the testName parameter
+
+	gradle dN -PwebTests -PtestName=<testname>
+	
+If you are customising the generated classes then you will need to compile them before running the scripts. As script testing is just an included file
+it will run before any tasks, so we we must run gradle first in this instance. For the Spock tests it will be a single invocation.
+
+	gradle testClasses; gradle dN -PwebTests -PtestName=<testname>
 
 ----------------------------------------------------------------------------------------
+
 As we now using configuration via GebConfig the baseUrl is set to http://localhost:8080, but you can override this with any environment 
 by adding the environment and its URL to GebConfig, e.g.
 
@@ -101,7 +111,19 @@ Then its simply accessed in the page class as:
 There is a MomentumPage which now sub-classes the geb.Page and is extended by the site pages.
 This applies the getMomentum() method for the titles if required.
 
-This is our first line of actual framework extension code and is only a utility method to make the configured title access easier to write
+This is our first line of actual framework extension code and is only a utility method to make the configured title access easier to write.
+
+So for example to see this in action, force the home page at checker to fail:
+Page <-- MomentumPage <-- MomentumHomePage <-- HomePage
+The MomentumHomePage has been generated with a hard-coded title derived from the actual site
+The HomePage is the generated class for customisation, so add the following to the HomePage
+
+	static at = { title == momentum.homePageTitle }
+	
+Then modify GebConfig and change either homePageTitle or homePageTitleSuffix to an invalid title.
+Run the test to see it fail:
+
+	gradle testClasses; gradle dN -PwebTests -PtestName=homePage
 
 ----------------------------------------------------------------------------------------
 
