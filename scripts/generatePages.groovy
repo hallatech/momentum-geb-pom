@@ -152,20 +152,26 @@ for (SitePage sitePage : momPages ) {
 		w << "\nimport groovy.lang.MetaClass"
 		w << "\nimport com.spindrift.momentum.web.MomentumPage"
 		w << "\n\nclass Momentum${pageName} extends MomentumPage {"
-		w << "\n\n  static url = '${sitePage.url}'"
-		w << "\n\n  static at = { title == '${sitePage.title}' }"
+		w << "\n\n  //Generated url derived from the BCC Site Builder URL Management"
+		w << "\n  static url = '${sitePage.url}'"
+		w << "\n\n  //At checker title derived from live site"
+		w << "\n  static at = { title == '${sitePage.title}' }"
 		w << "\n\n}"
 	}
 	//Only re-generate custom classes when requested otherwise any customisations would be lost
+	//This will only override Page classes that do not exist. To override even customised classes you must also force it by specifying reInitialiseCustomisedClasses
 	if (hasProperty('overrideCustomClasses')) {
-		new File("${customPackageDir}/${pageName}.groovy").withWriter { w->
-			w << "package ${customPackageName}"
-			w << "\n\nimport geb.*"
-			w << "\nimport groovy.lang.MetaClass"
-			w << "\nimport ${momPackageName}.Momentum${pageName}"
-			w << "\n\nclass ${pageName} extends Momentum${pageName} {"
-			w << "\n\n  //Add customisations to override generated class here"
-			w << "\n\n}"
+		def customClassFile = new File("${customPackageDir}/${pageName}.groovy")
+		if (!(customClassFile).exists() || (hasProperty('reInitialiseCustomisedClasses'))) {
+			customClassFile.withWriter { w->
+				w << "package ${customPackageName}"
+				w << "\n\nimport geb.*"
+				w << "\nimport groovy.lang.MetaClass"
+				w << "\nimport ${momPackageName}.Momentum${pageName}"
+				w << "\n\nclass ${pageName} extends Momentum${pageName} {"
+				w << "\n\n  //Add customisations to override generated class here"
+				w << "\n\n}"
+			}
 		}
 	}
 }

@@ -108,6 +108,7 @@ momentum {
 	homePageTitle = "${siteTitlePrefix}${homePageTitleSuffix}"
 	registrationPageTitle = "${siteTitlePrefix}Register"
 	loginPageTitle = "${siteTitlePrefix}Login"
+	accountHubPageTitle = "${siteTitlePrefix}My Account"
 	
 	homePageUrl = '/'
 }
