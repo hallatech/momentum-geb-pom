@@ -47,6 +47,8 @@ drivers.each { driver ->
 
 				systemProperty "geb.build.reportsDir", reporting.file("$name/geb")
 				systemProperty "geb.env", driver
+				
+				include '**/RegisteredUser*/**'
 
 				// If you wanted to set the baseUrl in your build…
 				// systemProperty "geb.build.baseUrl", "http://myapp.com"
